@@ -16,11 +16,17 @@ npm install
 ### Basic Usage
 
  1. Make changes to the code
- 2. Build the project by running:
+ 2. Build the project and keep watching for code changes, by running:
 
-        npm run build
-        
- 3. See your changes
+        npm run watch
+
+ 3. Run the app
+
+        npm run exe
+
+ 4. Change your code, make sure there are no errors in the terminal
+ 5. Reload your code Command/Control+R (or use the menu: View -> Reload)
+ 6. Debug code via View -> Toggle DevTools
 
 ### Advanced Usage
 
