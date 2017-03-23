@@ -21,15 +21,15 @@
     "transform": []
   },
   "devDependencies": {
-    "cross-conf-env": "latest",
-    "tsify": "latest",
+    "cross-conf-env": "^1.0.0",
+    "tsify": "^1.0.0",
     "typescript": "^1.8.10",
-    "parallelshell": "latest",
-    "preprocessify": "latest",
-    "mapstraction": "latest",
-    "rimraf": "latest",
-    "watch": "latest",
-    "watchify": "latest"
+    "parallelshell": "^2.0.0",
+    "preprocessify": "^1.0.0",
+    "mapstraction": "^1.0.0",
+    "rimraf": "^1.0.9",
+    "watch": "^1.0.2",
+    "watchify": "^3.0.0"
   },
   "dependencies": {
     "electron-prebuilt": "^1.4.1",
