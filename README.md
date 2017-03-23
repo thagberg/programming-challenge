@@ -28,10 +28,16 @@ npm install
  5. Reload your code Command/Control+R (or use the menu: View -> Reload)
  6. Debug code via View -> Toggle DevTools
 
-### Advanced Usage
+### Commands
+
+#### `npm run build`
+Builds the code.
 
 #### `npm run watch`
 Builds the code then watches for changes and automatically rebuilds the project.
+
+#### `npm start`
+Same as `npm run watch`;
 
 #### `npm run clean`
 Deletes all files generated when building/watching your code.
