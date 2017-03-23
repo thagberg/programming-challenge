@@ -5,14 +5,30 @@ Install [Node.js 4.5.0](https://nodejs.org/en/). This will also install `npm` as
 ## Installing
 
 Run the command `npm install` to install all dependencies.
+```
+git clone https://github.com/golgobot/programming-challenge
+cd programming-challenge
+npm install
+```
 
-## Building
+## Usage
 
-| Command | Description
-|---|---|
-|`npm run build` | Build the project in debug mode. |
-|`npm run watch` | Watches files and will build every time a file is changed. Use this for development |
-|`npm run clean` | Deletes built JavaScript files. |
+### Basic Usage
+
+ 1. Make changes to the code
+ 2. Build the project by running:
+
+        npm run build
+        
+ 3. See your changes
+
+### Advanced Usage
+
+#### `npm run watch`
+Builds the code then watches for changes and automatically rebuilds the project.
+
+#### `npm run clean`
+Deletes all files generated when building/watching your code.
 
 ## Executing
 

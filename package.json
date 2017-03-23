@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "cross-conf-env": "latest",
-    "tsify": "latest",
+    "tsify": "^1.0.0",
     "typescript": "^1.8.10",
     "parallelshell": "latest",
     "preprocessify": "latest",
