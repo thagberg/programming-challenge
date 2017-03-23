@@ -4,7 +4,7 @@ Install [Node.js 4.5.0](https://nodejs.org/en/). This will also install `npm` as
 
 ## Installing
 
-Run the command `npm install` to install all dependencies.
+Clone repo and install dependencies.
 ```
 git clone https://github.com/golgobot/programming-challenge
 cd programming-challenge
