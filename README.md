@@ -2,14 +2,18 @@
 
 Install [Node.js 4.5.0](https://nodejs.org/en/). This will also install `npm` as a global command.
 
-## Installing
+## Setup
 
-Clone repo and install dependencies.
+ 1. Requires [Node.js](https://nodejs.org/dist/v6.10.1/node-v6.10.1.pkg)
+ 2. Fork the repo
+ 3. Clone the repo and install it's dependencies:
 ```
-git clone https://github.com/golgobot/programming-challenge
+git clone https://github.com/<your-github-username>/programming-challenge
 cd programming-challenge
 npm install
 ```
+ 4. See [Usage](#usage) section below for how to build/test your code.
+ 5. Once you feel ready, you should create a Pull Request against [francoislaberge/programming-challenge](https://github.com/francoislaberge/programming-challenge)
 
 ## Usage
 
