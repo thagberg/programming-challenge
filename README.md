@@ -13,7 +13,9 @@ cd programming-challenge
 npm install
 ```
  4. See [Usage](#usage) section below for how to build/test your code.
- 5. Once you feel ready send a link to your repo by email to main hiring manager at Jibo.
+ 5. Once you feel ready, you should create a Pull Request against [francoislaberge/programming-challenge](https://github.com/francoislaberge/programming-challenge)
+ 6. Send an email to your main Jibo hiring manager.
+ 7. They will then review your pull request and potentially ask for some changes
 
 ## Usage
 
