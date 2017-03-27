@@ -2,17 +2,51 @@
 
 Install [Node.js 4.5.0](https://nodejs.org/en/). This will also install `npm` as a global command.
 
-## Installing
+## Setup
 
-Run the command `npm install` to install all dependencies.
+ 1. Requires [Node.js](https://nodejs.org/dist/v6.10.1/node-v6.10.1.pkg)
+ 2. Fork the repo
+ 3. Clone the repo and install it's dependencies:
+```
+git clone https://github.com/<your-github-username>/programming-challenge
+cd programming-challenge
+npm install
+```
+ 4. See [Usage](#usage) section below for how to build/test your code.
+ 5. Once you feel ready, you should create a Pull Request against [francoislaberge/programming-challenge](https://github.com/francoislaberge/programming-challenge)
+ 6. Send an email to your main Jibo hiring manager.
+ 7. They will then review your pull request and potentially ask for some changes
 
-## Building
+## Usage
 
-| Command | Description
-|---|---|
-|`npm run build` | Build the project in debug mode. |
-|`npm run watch` | Watches files and will build every time a file is changed. Use this for development |
-|`npm run clean` | Deletes built JavaScript files. |
+### Basic Usage
+
+ 1. Make changes to the code
+ 2. Build the project and keep watching for code changes, by running:
+
+        npm run watch
+
+ 3. Run the app
+
+        npm run exe
+
+ 4. Change your code, make sure there are no errors in the terminal
+ 5. Reload your code Command/Control+R (or use the menu: View -> Reload)
+ 6. Debug code via View -> Toggle DevTools
+
+### Commands
+
+#### `npm run build`
+Builds the code.
+
+#### `npm run watch`
+Builds the code then watches for changes and automatically rebuilds the project.
+
+#### `npm start`
+Same as `npm run watch`;
+
+#### `npm run clean`
+Deletes all files generated when building/watching your code.
 
 ## Executing
 
