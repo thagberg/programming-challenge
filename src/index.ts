@@ -45,6 +45,11 @@ renderer.backgroundColor = 0x5552b2;
 //stage.addChild(checkerBoard);
 //animate();
 
+// set up game loop timer
+const UPDATE_TIME: number = 100;
+let watchTime: number = 0;
+let ticker = new PIXI.ticker.Ticker();
+ticker.stop();
 
 // create board, arrows, and pieces
 let checkers: Checker[][] = [];
@@ -52,7 +57,7 @@ let checkerBoard = createCheckerBoard(numColumns, numRows, checkerWidth, checker
 stage.addChild(checkerBoard);
 let chosenSpot: Checker = checkers[Math.floor(Math.random() * checkers.length)][Math.floor(Math.random() * checkers[0].length)];
 let checkerPiece: Piece = new Piece(chosenSpot, checkerWidth/2.3, 0xFF0000);
-chosenSpot.touched = true;
+chosenSpot.touch();
 stage.addChild(checkerPiece.graphics);
 for (let row of checkers) {
     for (let checker of row) {
@@ -66,13 +71,13 @@ function clickPlay() {
 }
 
 function clickStop() {
-    alert("Clicked Stop");
+    stop();
 }
 
 function clickShuffle() {
     shuffleArrows();
     // we just "reset" the touched graph, so re-mark the checker piece's spot as touched
-    checkerPiece.spot.touched = true;
+    checkerPiece.spot.touch();
 }
 
 function clickReset() {
@@ -96,6 +101,24 @@ stage.addChild(resetWidget.graphics);
 stage.addChild(resetWidget.text);
 
 animate();
+
+for (let row of checkers) {
+    for (let checker of row) {
+        checker.draw();
+    }
+}
+
+ticker.add((deltaTime)=>{
+
+    // doing one-second "turns"
+    watchTime += deltaTime;
+    if (watchTime >= UPDATE_TIME) {
+        update();
+        watchTime = 0;
+    }
+
+    checkerPiece.update(deltaTime);
+});
 
 function createCheckerBoard(numColumns: number, 
                             numRows: number, 
@@ -135,12 +158,20 @@ function shuffleArrows() {
             checker.arrow.direction = <Direction>Math.floor(Math.random() * 4);
             // since we're reshuffling the arrows, we no longer know which spaces
             // the checker piece has already touched
-            checker.touched = false;
+            checker.reset();
         }
     }
 }
 
 function play() {
+    ticker.start();
+}
+
+function stop() {
+    ticker.stop();
+}
+
+function update() {
     let currentSpot = checkerPiece.spot;
     let newSpot: Checker;
     let foundEdge: boolean = false;
@@ -182,9 +213,11 @@ function play() {
     } else {
         if (newSpot.touched) {
             alert("Loop detected -- Can't move to this spot");
+            stop();
         } else {
-            checkerPiece.spot = newSpot;
-            checkerPiece.spot.touched = true;
+            //checkerPiece.spot = newSpot;
+            //checkerPiece.spot.touched = true;
+            checkerPiece.move(newSpot);
         }
     }
 }
@@ -200,11 +233,11 @@ function animate() {
     checkerPiece.draw();
 
     // draw arrows
-    for (let row of checkers) {
+    /*for (let row of checkers) {
         for (let checker of row) {
             checker.draw();
         }
-    }
+    }*/
 
     playWidget.draw();
     stopWiget.draw();
