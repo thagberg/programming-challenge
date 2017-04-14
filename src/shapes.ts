@@ -207,6 +207,7 @@ export class UIWidget {
 	}
 
 	draw () {
+		this.graphics.clear();
 		this.graphics.beginFill(this.color, this.alpha);
 		this.graphics.drawRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
 		this.graphics.endFill();
