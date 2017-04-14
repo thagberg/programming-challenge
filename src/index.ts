@@ -66,8 +66,12 @@ setup();
 animate();
 
 // Setup PXI ticker as game logic loop
-ticker.add((deltaTime)=>{
+ticker.add(gameLoop);
 
+
+/*** Functions ***/
+
+function gameLoop(deltaTime) {
     // doing one-second "turns"
     watchTime += deltaTime;
     if (watchTime >= UPDATE_TIME) {
@@ -76,7 +80,7 @@ ticker.add((deltaTime)=>{
     }
 
     checkerPiece.update(deltaTime);
-});
+}
 
 function animate() {
     // start the timer for the next animation loop
@@ -106,18 +110,7 @@ function animate() {
 // reflect the new window size
 window.onresize = (event)=>{
     renderer.resize(window.innerWidth, window.innerHeight);
-    checkerWidth = renderer.width / numColumns;
-    checkerHeight = renderer.height / numRows;
-    stage.removeChildren(0, stage.children.length-1);
-    setup();
-    stage.addChild(playWidget.graphics);
-    stage.addChild(playWidget.text);
-    stage.addChild(stopWiget.graphics);
-    stage.addChild(stopWiget.text);
-    stage.addChild(shuffleWidget.graphics);
-    stage.addChild(shuffleWidget.text);
-    stage.addChild(resetWidget.graphics);
-    stage.addChild(resetWidget.text);
+    reset();
 };
 
 
@@ -227,6 +220,7 @@ function update() {
         stop();
         victorySound.play();
         alert("You win!  Congratulations!");
+        reset();
     } else {
         if (newSpot.touched) {
             stop();
