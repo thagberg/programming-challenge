@@ -33,6 +33,7 @@
   },
   "dependencies": {
     "electron-prebuilt": "^1.4.1",
+    "howler": "^2.0.3",
     "pixi.js": "^4.3.3"
   }
 }
