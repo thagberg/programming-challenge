@@ -17,13 +17,9 @@ export class Arrow {
         this.direction = Direction.Down;
 
         this.graphics = new PIXI.Graphics();
-        //this.graphics.width = c[0] - a[0];
-        //this.graphics.height = b[1] - a[1];
     }
 
-    //draw (scale: PIXI.Point) {
      draw(width: number, height: number) {
-     //draw() {
     	// Rotate the arrow by a set number of radians, depending on which
     	// direction it should be facing
     	this.graphics.rotation = (90 * Math.PI / 180) * this.direction;

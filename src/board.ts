@@ -32,9 +32,6 @@ export class Board {
 	}
 
 	resize(renderer: PIXI.SystemRenderer) {
-		/*if (this.graphics.children && this.graphics.children.length) {
-			this.graphics.removeChildren(0, this.graphics.children.length-1);
-		}*/
 		if (this.graphics.children && this.graphics.children.length) {
 			this.graphics.removeChildAt(0);
 		}
@@ -42,14 +39,8 @@ export class Board {
 		this.checkerWidth = cellSize;
 		this.checkerHeight = cellSize;
 		this.createCheckerBoard();
-		/*for (let row of this.checkers) {
-			for (let checker of row) {
-				this.graphics.addChild(checker.graphics);
-			}
-		}*/
 		if (this.checkerPiece) {
 			this.checkerPiece.r = this.checkerWidth/2.3;
-			//this.graphics.addChildAt(this.checkerPiece.graphics, 1);
 		}
 	}
 
