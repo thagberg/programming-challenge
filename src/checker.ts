@@ -47,8 +47,6 @@ export class Checker {
 	draw(x: number, y: number, width: number, height: number) {
 		this.graphics.x = x;
 		this.graphics.y = y;
-		this.graphics.width = width;
-		this.graphics.height = height;
 		this.arrow.draw(width, height);	
 	}
 }

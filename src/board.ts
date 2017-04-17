@@ -80,7 +80,7 @@ export class Board {
 	}
 
 	draw() {
-		this.checkerPiece.draw();
+		this.checkerPiece.draw(this.checkerWidth);
 		for (let i = 0; i < this.checkers.length; i++) {
 			let row = this.checkers[i];
 			for (let j = 0; j < row.length; j++) {

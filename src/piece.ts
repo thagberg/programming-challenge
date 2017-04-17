@@ -64,11 +64,11 @@ export class Piece {
 		}
 	}
 
-	draw () {
+	draw (width: number) {
 		this.graphics.clear();
 		this.graphics.beginFill(this.color, 1);
-		this.graphics.drawCircle((this.spot.graphics.x + this.spot.graphics.width/2)-this.x, 
-			(this.spot.graphics.y + this.spot.graphics.height/2)-this.y, this.r);
+		this.graphics.drawCircle((this.spot.graphics.x + width/2)-this.x, 
+			(this.spot.graphics.y + width/2)-this.y, this.r);
 		this.graphics.endFill();
 	}
 }

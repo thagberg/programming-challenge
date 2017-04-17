@@ -26,7 +26,6 @@ export class Arrow {
 
         this.graphics.scale.x = width/100;
         this.graphics.scale.y = height/100;
-
         this.graphics.x = width/2;
         this.graphics.y = height/2;
 
