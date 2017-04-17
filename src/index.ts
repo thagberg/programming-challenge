@@ -1,5 +1,4 @@
 /// <reference path="../typings/index.d.ts" />
-/// <reference path="shapes.ts" />
 
 import PIXI = require('pixi.js');
 import Howler = require('howler');
@@ -7,7 +6,11 @@ import Howler = require('howler');
 const renderer:PIXI.WebGLRenderer = new PIXI.WebGLRenderer(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.view);
 
-import {Arrow, Direction, Checker, Piece, UIWidget} from './shapes';
+import {Direction} from './direction';
+import {Arrow} from './arrow';
+import {Checker} from './checker';
+import {UIWidget} from './widget';
+import {Piece} from './piece';
 
 // You need to create a root container that will hold the scene you want to draw.
 const stage:PIXI.Container = new PIXI.Container();
