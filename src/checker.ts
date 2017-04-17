@@ -1,3 +1,4 @@
+import PIXI = require('pixi.js');
 import {Direction} from './direction';
 import {Arrow} from './arrow';
 
@@ -30,16 +31,14 @@ export class Checker {
 	touch() {
 		this.touched = true;
 		this.arrow.color = 0x008800;
-		this.arrow.draw();
 	}
 
 	reset() {
 		this.touched = false;
 		this.arrow.color = 0x3f3f3f;
-		this.arrow.draw();
 	}
 
-	draw () {
-		this.arrow.draw();
+	draw (scale: PIXI.Point) {
+		this.arrow.draw(scale);
 	}
 }

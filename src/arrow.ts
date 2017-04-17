@@ -1,3 +1,4 @@
+import PIXI = require('pixi.js');
 import {Direction} from './direction';
 
 export class Arrow {
@@ -17,10 +18,11 @@ export class Arrow {
         this.direction = Direction.Down;
     }
 
-    draw () {
+    draw (scale: PIXI.Point) {
     	// Rotate the arrow by a set number of radians, depending on which
     	// direction it should be facing
     	this.graphics.rotation = (90 * Math.PI / 180) * this.direction;
+        this.graphics.scale = scale;
 
         this.graphics.beginFill(this.color, 1);
         this.graphics.drawPolygon([this.a[0], this.a[1], 

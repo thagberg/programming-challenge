@@ -53,6 +53,9 @@ let checkerBoard: PIXI.Sprite;
 let chosenSpot: Checker;
 let checkerPiece: Piece;
 
+// graphcis scale
+let scale: PIXI.Point = new PIXI.Point(1, 1);
+
 // Sound effects
 let slidingSound = new Howler.Howl({
     src: 'Sliding.mp3'
@@ -106,6 +109,8 @@ function animate() {
     decreaseColumnsWidget.draw();
     increaseColumnsWidget.draw();
     columnNumWidget.draw();
+
+    drawArrows();
 
     // this is the main render call that makes pixi draw your container and its children.
     renderer.render(stage);
@@ -175,6 +180,7 @@ function shuffleArrows() {
             checker.reset();
         }
     }
+    drawArrows();
 }
 
 function play() {
@@ -251,6 +257,9 @@ function setup() {
     checkerWidth = cellSize;
     checkerHeight = cellSize;
 
+    //scale = cellSize / 100;
+    scale.x = scale.y = cellSize / 100;
+
     checkers = Helpers.createCheckers(numColumns, numRows, checkerWidth, checkerHeight);
     checkerBoard = Helpers.createCheckerBoard(numColumns, numRows, checkerWidth, checkerHeight);
     stage.addChild(checkerBoard);
@@ -311,7 +320,7 @@ function setup() {
 function drawArrows() {
     for (let row of checkers) {
         for (let checker of row) {
-            checker.draw();
+            checker.draw(scale);
         }
     }
 }
