@@ -16,7 +16,7 @@ const stage:PIXI.Container = new PIXI.Container();
 renderer.backgroundColor = 0x5552b2;
 
 // set up game loop timer
-const UPDATE_TIME: number = 100;
+const UPDATE_TIME: number = 25;
 let watchTime: number = 0;
 let ticker = new PIXI.ticker.Ticker();
 ticker.stop();
