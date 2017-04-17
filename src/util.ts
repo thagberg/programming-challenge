@@ -51,4 +51,13 @@ export namespace Helpers {
 	export function getCellsize(numColumns: number, numRows: number, screenWidth: number, screenHeight: number) {
 		return Math.min(screenWidth / numColumns, screenHeight / numRows);
 	}
+
+	export function drawCheckers(checkers: Checker[][], scale: PIXI.Point) {
+	    for (let row of checkers) {
+	        for (let checker of row) {
+	            checker.draw(scale);
+	        }
+	    }
+	}
+
 }

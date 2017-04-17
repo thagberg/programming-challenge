@@ -12,6 +12,8 @@ import {Checker} from './checker';
 import {UIWidget} from './widget';
 import {Piece} from './piece';
 import {Helpers} from './util';
+import {Game} from './game';
+import {GameState} from './state';
 
 // You need to create a root container that will hold the scene you want to draw.
 const stage:PIXI.Container = new PIXI.Container();
@@ -20,10 +22,11 @@ const stage:PIXI.Container = new PIXI.Container();
 renderer.backgroundColor = 0x000000;
 
 // set up game loop timer
-const UPDATE_TIME: number = 25;
-let watchTime: number = 0;
 let ticker = new PIXI.ticker.Ticker();
 ticker.stop();
+
+// game object
+let game = new Game();
 
 // define UI
 let playWidget: UIWidget;
@@ -39,28 +42,10 @@ let columnNumWidget: UIWidget;
 let victoryWidget: UIWidget;
 let cycleWidget: UIWidget;
 
-// define game board properties
-let numColumns = 12;
-let numRows = 6;
-let checkerWidth = 0;
-let checkerHeight = 0;
-// let checkerWidth = renderer.width / numColumns;
-// let checkerHeight = renderer.height / numRows;
-
-// create board, arrows, and pieces
-let checkers: Checker[][] = [];
-let checkerBoard: PIXI.Sprite;
-let chosenSpot: Checker;
-let checkerPiece: Piece;
-
 // graphcis scale
 let scale: PIXI.Point = new PIXI.Point(1, 1);
 
 // Sound effects
-let slidingSound = new Howler.Howl({
-    src: 'Sliding.mp3'
-});
-
 let victorySound = new Howler.Howl({
     src: 'win.mp3'
 });
@@ -77,26 +62,28 @@ animate();
 // Setup PXI ticker as game logic loop
 ticker.add(gameLoop);
 
+function gameLoop(deltaTime: number) {
+    let newState = game.gameLoop(deltaTime);
+    if (newState == GameState.Victory) {
+        stop();
+        victorySound.play();
+        alert("Congratulations, you win!");
+        reset();
+    } else if (newState == GameState.Failure) {
+        stop();
+        failSound.play();
+        alert("Cycle detected -- can't move here");
+    }
+}
 
 /*** Functions ***/
-
-function gameLoop(deltaTime) {
-    // doing one-second "turns"
-    watchTime += deltaTime;
-    if (watchTime >= UPDATE_TIME) {
-        update();
-        watchTime = 0;
-    }
-
-    checkerPiece.update(deltaTime);
-}
 
 function animate() {
     // start the timer for the next animation loop
     requestAnimationFrame(animate);
 
-    // draw checker piece
-    checkerPiece.draw();
+    // draw game
+    game.draw();
 
     // draw UI widgets
     playWidget.draw();
@@ -109,8 +96,6 @@ function animate() {
     decreaseColumnsWidget.draw();
     increaseColumnsWidget.draw();
     columnNumWidget.draw();
-
-    drawArrows();
 
     // this is the main render call that makes pixi draw your container and its children.
     renderer.render(stage);
@@ -135,9 +120,7 @@ function clickStop() {
 }
 
 function clickShuffle() {
-    shuffleArrows();
-    // we just "reset" the touched graph, so re-mark the checker piece's spot as touched
-    checkerPiece.spot.touch();
+    game.shuffle();
 }
 
 function clickReset() {
@@ -145,136 +128,30 @@ function clickReset() {
 }
 
 function clickDecreaseRows() {
-    if (numRows > 1) {
-        numRows--;
-        reset();
-    }
+    game.decreaseRows();
+    reset();
 }
 
 function clickIncreaseRows() {
-    numRows++;
+    game.increaseRows();
     reset();
 }
 
 function clickDecreaseColumns() {
-    if (numColumns > 1) {
-        numColumns--;
-        reset();
-    }
+    game.decreaseColumns();
+    reset();
 }
 
 function clickIncreaseColumns() {
-    numColumns++;
+    game.increaseColumns();
     reset();
 }
 
 
 /**** Game Logic Functions ****/
 
-function shuffleArrows() {
-    for (let row of checkers) {
-        for (let checker of row) {
-            checker.arrow.direction = Helpers.getRandomDirection();
-            // since we're reshuffling the arrows, we no longer know which spaces
-            // the checker piece has already touched
-            checker.reset();
-        }
-    }
-    drawArrows();
-}
-
-function play() {
-    ticker.start();
-}
-
-function stop() {
-    ticker.stop();
-}
-
-function update() {
-    let currentSpot = checkerPiece.spot;
-    let newSpot: Checker;
-    let foundEdge: boolean = false;
-    switch (currentSpot.arrow.direction) {
-        case (Direction.Down):
-            if (currentSpot.row != numRows-1) {
-                newSpot = checkers[currentSpot.row+1][currentSpot.column];
-            } else {
-                foundEdge = true;
-            }
-            break;
-        case (Direction.Up):
-            if (currentSpot.row != 0) {
-                newSpot = checkers[currentSpot.row-1][currentSpot.column];
-            } else {
-                foundEdge = true;
-            }
-            break;
-        case (Direction.Right):
-            if (currentSpot.column != numColumns-1) {
-                newSpot = checkers[currentSpot.row][currentSpot.column+1];
-            } else {
-                foundEdge = true;
-            }
-            break;
-        case (Direction.Left):
-            if (currentSpot.column != 0) {
-                newSpot = checkers[currentSpot.row][currentSpot.column-1];
-            } else {
-                foundEdge = true;
-            }
-            break;    
-        default:
-            break;
-    }
-
-    if (foundEdge) {
-        stop();
-        victorySound.play();
-        alert("You win!  Congratulations!");
-        reset();
-    } else {
-        if (newSpot.touched) {
-            stop();
-            failSound.play();
-            alert("Loop detected -- Can't move to this spot");
-        } else {
-            checkerPiece.move(newSpot);
-            slidingSound.play();
-        }
-    }
-}
-
-
-function reset() {
-    stop();
-    stage.removeChildren(0, stage.children.length-1);
-    setup();
-}
-
 function setup() {
-    let cellSize = Helpers.getCellsize(numColumns, numRows, renderer.width, renderer.height);
-    checkerWidth = cellSize;
-    checkerHeight = cellSize;
-
-    //scale = cellSize / 100;
-    scale.x = scale.y = cellSize / 100;
-
-    checkers = Helpers.createCheckers(numColumns, numRows, checkerWidth, checkerHeight);
-    checkerBoard = Helpers.createCheckerBoard(numColumns, numRows, checkerWidth, checkerHeight);
-    stage.addChild(checkerBoard);
-    chosenSpot = checkers[Math.floor(Math.random() * checkers.length)][Math.floor(Math.random() * checkers[0].length)];
-    checkerPiece = new Piece(chosenSpot, checkerWidth/2.3, 0xBB0000);
-    chosenSpot.touch();
-    stage.addChild(checkerPiece.graphics);
-
-    for (let row of checkers) {
-        for (let checker of row) {
-            stage.addChild(checker.arrow.graphics);
-        }
-    }
-
-    drawArrows();
+    game.setup(stage, renderer); 
 
     playWidget = new UIWidget(new PIXI.Rectangle(renderer.width-100, 30, 65, 35), "Play", clickPlay);
     stage.addChild(playWidget.graphics);
@@ -296,7 +173,7 @@ function setup() {
     stage.addChild(decreaseRowsWidget.graphics);
     stage.addChild(decreaseRowsWidget.text);
 
-    rowNumWidget = new UIWidget(new PIXI.Rectangle(decreaseRowsWidget.rect.x + 40, 230, 40, 35), String(numRows), ()=>{});
+    rowNumWidget = new UIWidget(new PIXI.Rectangle(decreaseRowsWidget.rect.x + 40, 230, 40, 35), String(game.numRows), ()=>{});
     stage.addChild(rowNumWidget.graphics);
     stage.addChild(rowNumWidget.text);
 
@@ -308,7 +185,7 @@ function setup() {
     stage.addChild(decreaseColumnsWidget.graphics);
     stage.addChild(decreaseColumnsWidget.text);
 
-    columnNumWidget = new UIWidget(new PIXI.Rectangle(decreaseColumnsWidget.rect.x + 40, 280, 40, 35), String(numColumns), ()=>{});
+    columnNumWidget = new UIWidget(new PIXI.Rectangle(decreaseColumnsWidget.rect.x + 40, 280, 40, 35), String(game.numColumns), ()=>{});
     stage.addChild(columnNumWidget.graphics);
     stage.addChild(columnNumWidget.text);
 
@@ -317,13 +194,22 @@ function setup() {
     stage.addChild(increaseColumnsWidget.text);
 }
 
-function drawArrows() {
-    for (let row of checkers) {
-        for (let checker of row) {
-            checker.draw(scale);
-        }
-    }
+function play() {
+    ticker.start();
 }
+
+function stop() {
+    ticker.stop();
+}
+
+function reset() {
+    stop();
+    stage.removeChildren(0, stage.children.length-1);
+    setup();
+}
+
+
+
 
 
 
