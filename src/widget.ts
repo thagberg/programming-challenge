@@ -57,10 +57,11 @@ export class UIWidget {
 		}
 	}
 
-	draw () {
+	draw (renderer: PIXI.SystemRenderer) {
 		this.graphics.clear();
+		this.text.x = renderer.width - this.rect.x + 5;
 		this.graphics.beginFill(this.color, this.alpha);
-		this.graphics.drawRect(this.rect.x, this.rect.y, this.rect.width, this.rect.height);
+		this.graphics.drawRect(renderer.width - this.rect.x, this.rect.y, this.rect.width, this.rect.height);
 		this.graphics.endFill();
 	}
 }

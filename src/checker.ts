@@ -11,6 +11,7 @@ export class Checker {
 	height: number;
 	arrow: Arrow;
 	touched: boolean;
+	graphics: PIXI.Graphics;
 
 	constructor(row: number, column: number, x: number, y: number, width: number, height: number) {
 		this.row = row;
@@ -20,10 +21,15 @@ export class Checker {
 		this.width = width;
 		this.height = height;
 
-		this.arrow = new Arrow([-18, -25], [0, 25], [18, -25], 0x3f3f3f);
+		this.graphics = new PIXI.Graphics();
+		this.graphics.x = this.x;
+		this.graphics.y = this.y;
+		this.graphics.width = this.width;
+		this.graphics.height = this.height;
+
+		this.arrow = new Arrow([-9, -12.5], [0, 12.5], [9, -12.5], 0x3f3f3f);
 		this.arrow.direction = Direction.Right;
-		this.arrow.graphics.position.x = this.x + this.width/2;
-		this.arrow.graphics.position.y = this.y + this.width/2;
+		this.graphics.addChild(this.arrow.graphics);
 
 		this.touched = false;
 	}
@@ -38,7 +44,11 @@ export class Checker {
 		this.arrow.color = 0x3f3f3f;
 	}
 
-	draw (scale: PIXI.Point) {
-		this.arrow.draw(scale);
+	draw(x: number, y: number, width: number, height: number) {
+		this.graphics.x = x;
+		this.graphics.y = y;
+		this.graphics.width = width;
+		this.graphics.height = height;
+		this.arrow.draw(width, height);	
 	}
 }

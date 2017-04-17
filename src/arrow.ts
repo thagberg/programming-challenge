@@ -14,15 +14,25 @@ export class Arrow {
         this.b = b;
         this.c = c;
         this.color = color;
-        this.graphics = new PIXI.Graphics();
         this.direction = Direction.Down;
+
+        this.graphics = new PIXI.Graphics();
+        //this.graphics.width = c[0] - a[0];
+        //this.graphics.height = b[1] - a[1];
     }
 
-    draw (scale: PIXI.Point) {
+    //draw (scale: PIXI.Point) {
+     draw(width: number, height: number) {
+     //draw() {
     	// Rotate the arrow by a set number of radians, depending on which
     	// direction it should be facing
     	this.graphics.rotation = (90 * Math.PI / 180) * this.direction;
-        this.graphics.scale = scale;
+
+        this.graphics.scale.x = width/100;
+        this.graphics.scale.y = height/100;
+
+        this.graphics.x = width/2;
+        this.graphics.y = height/2;
 
         this.graphics.beginFill(this.color, 1);
         this.graphics.drawPolygon([this.a[0], this.a[1], 

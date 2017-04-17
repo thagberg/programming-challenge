@@ -2,6 +2,7 @@
 
 import PIXI = require('pixi.js');
 import Howler = require('howler');
+import {Board} from './board';
 import {Checker} from './checker';
 import {Arrow} from './arrow';
 import {Direction} from './direction';
@@ -12,26 +13,17 @@ import {Helpers} from './util';
 const UPDATE_TIME: number = 25;
 export class Game {
 	watchTime: number = 0;
-	// let ticker = new PIXI.ticker.Ticker();
-	// ticker.stop();
 
 	// board state
+	board: Board;
 	numColumns: number = 12;
 	numRows:  number = 6;
-	checkerWidth: number = 0;
-	checkerHeight: number = 0;	
-
-	// game pieces
-	checkers: Checker[][] = [];
-	checkerBoard: PIXI.Sprite;
-	chosenSpot: Checker;
-	checkerPiece: Piece;
 
 	scale: PIXI.Point = new PIXI.Point(1, 1);
 
 	slidingSound: Howl;
 
-	constructor() {
+	constructor(renderer: PIXI.SystemRenderer) {
 		this.slidingSound = new Howler.Howl({
 			src: 'Sliding.mp3'
 		});
@@ -46,41 +38,41 @@ export class Game {
 	        this.watchTime = 0;
 	    }
 
-	    this.checkerPiece.update(deltaTime);
+	    this.board.checkerPiece.update(deltaTime);
 	    return newState;
 	}
 
 	update() {
 		let newGameState = GameState.Continue;
 
-	    let currentSpot = this.checkerPiece.spot;
+	    let currentSpot = this.board.checkerPiece.spot;
 	    let newSpot: Checker;
 	    let foundEdge: boolean = false;
 	    switch (currentSpot.arrow.direction) {
 	        case (Direction.Down):
 	            if (currentSpot.row != this.numRows-1) {
-	                newSpot = this.checkers[currentSpot.row+1][currentSpot.column];
+	                newSpot = this.board.checkers[currentSpot.row+1][currentSpot.column];
 	            } else {
 	                foundEdge = true;
 	            }
 	            break;
 	        case (Direction.Up):
 	            if (currentSpot.row != 0) {
-	                newSpot = this.checkers[currentSpot.row-1][currentSpot.column];
+	                newSpot = this.board.checkers[currentSpot.row-1][currentSpot.column];
 	            } else {
 	                foundEdge = true;
 	            }
 	            break;
 	        case (Direction.Right):
 	            if (currentSpot.column != this.numColumns-1) {
-	                newSpot = this.checkers[currentSpot.row][currentSpot.column+1];
+	                newSpot = this.board.checkers[currentSpot.row][currentSpot.column+1];
 	            } else {
 	                foundEdge = true;
 	            }
 	            break;
 	        case (Direction.Left):
 	            if (currentSpot.column != 0) {
-	                newSpot = this.checkers[currentSpot.row][currentSpot.column-1];
+	                newSpot = this.board.checkers[currentSpot.row][currentSpot.column-1];
 	            } else {
 	                foundEdge = true;
 	            }
@@ -95,7 +87,7 @@ export class Game {
 	        if (newSpot.touched) {
 	            newGameState = GameState.Failure;
 	        } else {
-	            this.checkerPiece.move(newSpot);
+	            this.board.checkerPiece.move(newSpot);
 	            this.slidingSound.play();
 	        }
 	    }
@@ -104,31 +96,15 @@ export class Game {
 	}
 
 	setup(stage: PIXI.Container, renderer: PIXI.SystemRenderer) {
-	    let cellSize = Helpers.getCellsize(this.numColumns, this.numRows, renderer.width, renderer.height);
-	    this.checkerWidth = cellSize;
-	    this.checkerHeight = cellSize;
-
-	    this.scale.x = this.scale.y = cellSize / 100;
-
-	    this.checkers = Helpers.createCheckers(this.numColumns, this.numRows, this.checkerWidth, this.checkerHeight);
-	    this.checkerBoard = Helpers.createCheckerBoard(this.numColumns, this.numRows, this.checkerWidth, this.checkerHeight);
-	    stage.addChild(this.checkerBoard);
-	    this.chosenSpot = this.checkers[Math.floor(Math.random() * this.checkers.length)][Math.floor(Math.random() * this.checkers[0].length)];
-	    this.checkerPiece = new Piece(this.chosenSpot, this.checkerWidth/2.3, 0xBB0000);
-	    this.chosenSpot.touch();
-	    stage.addChild(this.checkerPiece.graphics);
-
-	    for (let row of this.checkers) {
-	        for (let checker of row) {
-	            stage.addChild(checker.arrow.graphics);
-	        }
-	    }
+		this.board = new Board(this.numRows, this.numColumns, renderer);
+		stage.addChild(this.board.graphics);
+	    this.board.chosenSpot.touch();
 	}
 
-	draw() {
-	    // draw checker piece
-	    this.checkerPiece.draw();
-	    Helpers.drawCheckers(this.checkers, this.scale);
+	draw(renderer: PIXI.SystemRenderer) {
+		this.board.graphics.x = (renderer.width/2) - (this.board.graphics.width/2);
+		this.board.graphics.y = (renderer.height/2) - (this.board.graphics.height/2);
+	    this.board.draw();
 	}
 
 	decreaseRows() {
@@ -152,19 +128,8 @@ export class Game {
 	}
 
 	shuffle() {
-		this.shuffleArrows();
-		this.checkerPiece.spot.touch();
-	}
-
-	shuffleArrows() {
-	    for (let row of this.checkers) {
-	        for (let checker of row) {
-	            checker.arrow.direction = Helpers.getRandomDirection();
-	            // since we're reshuffling the arrows, we no longer know which spaces
-	            // the checker piece has already touched
-	            checker.reset();
-	        }
-	    }
+		this.board.shuffleArrows();
+		this.board.checkerPiece.spot.touch();
 	}
 }
 

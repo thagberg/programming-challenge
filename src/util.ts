@@ -55,7 +55,7 @@ export namespace Helpers {
 	export function drawCheckers(checkers: Checker[][], scale: PIXI.Point) {
 	    for (let row of checkers) {
 	        for (let checker of row) {
-	            checker.draw(scale);
+	            //checker.draw(scale);
 	        }
 	    }
 	}

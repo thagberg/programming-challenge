@@ -26,7 +26,7 @@ let ticker = new PIXI.ticker.Ticker();
 ticker.stop();
 
 // game object
-let game = new Game();
+let game = new Game(renderer);
 
 // define UI
 let playWidget: UIWidget;
@@ -41,9 +41,6 @@ let increaseColumnsWidget: UIWidget;
 let columnNumWidget: UIWidget;
 let victoryWidget: UIWidget;
 let cycleWidget: UIWidget;
-
-// graphcis scale
-let scale: PIXI.Point = new PIXI.Point(1, 1);
 
 // Sound effects
 let victorySound = new Howler.Howl({
@@ -62,6 +59,8 @@ animate();
 // Setup PXI ticker as game logic loop
 ticker.add(gameLoop);
 
+/*** Functions ***/
+
 function gameLoop(deltaTime: number) {
     let newState = game.gameLoop(deltaTime);
     if (newState == GameState.Victory) {
@@ -76,29 +75,27 @@ function gameLoop(deltaTime: number) {
     }
 }
 
-/*** Functions ***/
-
 function animate() {
     // start the timer for the next animation loop
     requestAnimationFrame(animate);
 
     // draw game
-    game.draw();
+    game.draw(renderer);
 
+    renderer.render(stage);
     // draw UI widgets
-    playWidget.draw();
-    stopWiget.draw();
-    shuffleWidget.draw();
-    resetWidget.draw();
-    decreaseRowsWidget.draw();
-    increaseRowsWidget.draw();
-    rowNumWidget.draw();
-    decreaseColumnsWidget.draw();
-    increaseColumnsWidget.draw();
-    columnNumWidget.draw();
+    playWidget.draw(renderer);
+    stopWiget.draw(renderer);
+    shuffleWidget.draw(renderer);
+    resetWidget.draw(renderer);
+    decreaseRowsWidget.draw(renderer);
+    increaseRowsWidget.draw(renderer);
+    rowNumWidget.draw(renderer);
+    decreaseColumnsWidget.draw(renderer);
+    increaseColumnsWidget.draw(renderer);
+    columnNumWidget.draw(renderer);
 
     // this is the main render call that makes pixi draw your container and its children.
-    renderer.render(stage);
 }
 
 // create window resize handler
@@ -106,7 +103,8 @@ function animate() {
 // reflect the new window size
 window.onresize = (event)=>{
     renderer.resize(window.innerWidth, window.innerHeight);
-    reset();
+    game.board.resize(renderer);
+    //reset();
 };
 
 
@@ -153,43 +151,43 @@ function clickIncreaseColumns() {
 function setup() {
     game.setup(stage, renderer); 
 
-    playWidget = new UIWidget(new PIXI.Rectangle(renderer.width-100, 30, 65, 35), "Play", clickPlay);
+    playWidget = new UIWidget(new PIXI.Rectangle(100, 30, 65, 35), "Play", clickPlay);
     stage.addChild(playWidget.graphics);
     stage.addChild(playWidget.text);
 
-    stopWiget = new UIWidget(new PIXI.Rectangle(renderer.width-100, 80, 65, 35), "Stop", clickStop);
+    stopWiget = new UIWidget(new PIXI.Rectangle(100, 80, 65, 35), "Stop", clickStop);
     stage.addChild(stopWiget.graphics);
     stage.addChild(stopWiget.text);
 
-    shuffleWidget = new UIWidget(new PIXI.Rectangle(renderer.width-100, 130, 90, 35), "Shuffle", clickShuffle);
+    shuffleWidget = new UIWidget(new PIXI.Rectangle(100, 130, 90, 35), "Shuffle", clickShuffle);
     stage.addChild(shuffleWidget.graphics);
     stage.addChild(shuffleWidget.text);
 
-    resetWidget = new UIWidget(new PIXI.Rectangle(renderer.width-100, 180, 80, 35), "Reset", clickReset);
+    resetWidget = new UIWidget(new PIXI.Rectangle(100, 180, 80, 35), "Reset", clickReset);
     stage.addChild(resetWidget.graphics);
     stage.addChild(resetWidget.text);
 
-    decreaseRowsWidget = new UIWidget(new PIXI.Rectangle(renderer.width-110, 230, 25, 35), "<", clickDecreaseRows);
+    decreaseRowsWidget = new UIWidget(new PIXI.Rectangle(110, 230, 25, 35), "<", clickDecreaseRows);
     stage.addChild(decreaseRowsWidget.graphics);
     stage.addChild(decreaseRowsWidget.text);
 
-    rowNumWidget = new UIWidget(new PIXI.Rectangle(decreaseRowsWidget.rect.x + 40, 230, 40, 35), String(game.numRows), ()=>{});
+    rowNumWidget = new UIWidget(new PIXI.Rectangle(decreaseRowsWidget.rect.x - 40, 230, 40, 35), String(game.numRows), ()=>{});
     stage.addChild(rowNumWidget.graphics);
     stage.addChild(rowNumWidget.text);
 
-    increaseRowsWidget = new UIWidget(new PIXI.Rectangle(rowNumWidget.rect.x + 45, 230, 25, 35), ">", clickIncreaseRows);
+    increaseRowsWidget = new UIWidget(new PIXI.Rectangle(rowNumWidget.rect.x - 45, 230, 25, 35), ">", clickIncreaseRows);
     stage.addChild(increaseRowsWidget.graphics);
     stage.addChild(increaseRowsWidget.text);
 
-    decreaseColumnsWidget = new UIWidget(new PIXI.Rectangle(renderer.width-110, 280, 25, 35), "<", clickDecreaseColumns);
+    decreaseColumnsWidget = new UIWidget(new PIXI.Rectangle(110, 280, 25, 35), "<", clickDecreaseColumns);
     stage.addChild(decreaseColumnsWidget.graphics);
     stage.addChild(decreaseColumnsWidget.text);
 
-    columnNumWidget = new UIWidget(new PIXI.Rectangle(decreaseColumnsWidget.rect.x + 40, 280, 40, 35), String(game.numColumns), ()=>{});
+    columnNumWidget = new UIWidget(new PIXI.Rectangle(decreaseColumnsWidget.rect.x - 40, 280, 40, 35), String(game.numColumns), ()=>{});
     stage.addChild(columnNumWidget.graphics);
     stage.addChild(columnNumWidget.text);
 
-    increaseColumnsWidget = new UIWidget(new PIXI.Rectangle(rowNumWidget.rect.x + 45, 280, 25, 35), ">", clickIncreaseColumns);
+    increaseColumnsWidget = new UIWidget(new PIXI.Rectangle(rowNumWidget.rect.x - 45, 280, 25, 35), ">", clickIncreaseColumns);
     stage.addChild(increaseColumnsWidget.graphics);
     stage.addChild(increaseColumnsWidget.text);
 }
