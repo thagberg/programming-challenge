@@ -11,12 +11,13 @@ import {Arrow} from './arrow';
 import {Checker} from './checker';
 import {UIWidget} from './widget';
 import {Piece} from './piece';
+import {Helpers} from './util';
 
 // You need to create a root container that will hold the scene you want to draw.
 const stage:PIXI.Container = new PIXI.Container();
 
-// set background color as an easy way to only draw half of the checkerboard spaces
-renderer.backgroundColor = 0x5552b2;
+//renderer.backgroundColor = 0x5552b2;
+renderer.backgroundColor = 0x000000;
 
 // set up game loop timer
 const UPDATE_TIME: number = 25;
@@ -41,8 +42,10 @@ let cycleWidget: UIWidget;
 // define game board properties
 let numColumns = 12;
 let numRows = 6;
-let checkerWidth = renderer.width / numColumns;
-let checkerHeight = renderer.height / numRows;
+let checkerWidth = 0;
+let checkerHeight = 0;
+// let checkerWidth = renderer.width / numColumns;
+// let checkerHeight = renderer.height / numRows;
 
 // create board, arrows, and pieces
 let checkers: Checker[][] = [];
@@ -166,7 +169,7 @@ function clickIncreaseColumns() {
 function shuffleArrows() {
     for (let row of checkers) {
         for (let checker of row) {
-            checker.arrow.direction = getRandomDirection();
+            checker.arrow.direction = Helpers.getRandomDirection();
             // since we're reshuffling the arrows, we no longer know which spaces
             // the checker piece has already touched
             checker.reset();
@@ -244,11 +247,12 @@ function reset() {
 }
 
 function setup() {
-    checkerWidth = renderer.width / numColumns;
-    checkerHeight = renderer.height / numRows;
+    let cellSize = Helpers.getCellsize(numColumns, numRows, renderer.width, renderer.height);
+    checkerWidth = cellSize;
+    checkerHeight = cellSize;
 
-    checkers = createCheckers(numColumns, numRows, checkerWidth, checkerHeight);
-    checkerBoard = createCheckerBoard(numColumns, numRows, checkerWidth, checkerHeight);
+    checkers = Helpers.createCheckers(numColumns, numRows, checkerWidth, checkerHeight);
+    checkerBoard = Helpers.createCheckerBoard(numColumns, numRows, checkerWidth, checkerHeight);
     stage.addChild(checkerBoard);
     chosenSpot = checkers[Math.floor(Math.random() * checkers.length)][Math.floor(Math.random() * checkers[0].length)];
     checkerPiece = new Piece(chosenSpot, checkerWidth/2.3, 0xBB0000);
@@ -312,46 +316,7 @@ function drawArrows() {
     }
 }
 
-function createCheckers(numColumns: number, numRows: number, checkerWidth: number, checkerHeight: number) {
-    let checkers: Checker[][] = [];
-    for (let i = 0; i < numRows; i++) {
-        checkers[i] = [];
-        for (let j = 0; j < numColumns; j++) {
-            let newChecker = new Checker(i, j, j*checkerWidth, i*checkerHeight, checkerWidth, checkerHeight);
-            // assign a random direction to each checker arrow
-            newChecker.arrow.direction = getRandomDirection();
-            checkers[i][j] = newChecker;
-        }
-    }
-    return checkers;
-}
 
-function createCheckerBoard(numColumns: number, 
-                            numRows: number, 
-                            checkerWidth: number, 
-                            checkerHeight: number) {
-    let checkerBoard = new PIXI.Graphics();
-    checkerBoard.beginFill(0x9f6bc4, 1);
 
-    let startRow = true;
-    for (let i = 0; i < numRows; i++)
-    {
-        for (let j = 0; j < numColumns; j++)
-        {
-            if ((j % 2 == 0) == startRow) {
-                checkerBoard.drawRect(j*checkerWidth, i*checkerHeight, checkerWidth, checkerHeight);
-            }
-        }
-        startRow = !startRow;
-    }
 
-    checkerBoard.endFill();
-
-    //return checkerBoard;
-    return new PIXI.Sprite(checkerBoard.generateCanvasTexture());
-}
-
-function getRandomDirection() {
-    return <Direction>Math.floor(Math.random() * 4);
-}
 
